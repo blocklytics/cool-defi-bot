@@ -2,12 +2,14 @@
 Functions providing formatted response to user arguments.
 Miha Lotric 2019
 """
-from cool_defi_bot.api.custom_exceptions import *
-from cool_defi_bot.api.getters import *
-from cool_defi_bot.api.helpers import api_call, could_float
-from cool_defi_bot.api.formatters import *
-import cool_defi_bot.config as config
 from dotenv import load_dotenv
+import os
+
+from cool_defi_bot.api.custom_exceptions import FormatError, DataError
+from cool_defi_bot.api.helpers import api_call, could_float
+import cool_defi_bot.api.getters as gt
+import cool_defi_bot.api.formatters as ft
+import cool_defi_bot.config as config
 
 
 load_dotenv()  # Load keys from .env file
@@ -30,19 +32,20 @@ def get_pool(request):
     if not days.isdigit() or int(days) < 1:
         raise FormatError("You must enter an integer for days ago.")
     # Get data
-    token_data = get_token_pool(token)
+    token_data = gt.get_token_pool(token)
     address = token_data['exchange']
     if not address:
         raise DataError('<b>No results found</b>\nTry a different symbol.')
-    annualized_returns = get_token_annualized(address, days)
+    annualized_returns = gt.get_token_annualized(address, days)
     annualized_returns = annualized_returns[0] if len(annualized_returns) else {}
     # Format the data
-    formatted_response = format_annualized_returns(token_data, annualized_returns)
+    formatted_response = ft.format_annualized_returns(token_data, annualized_returns)
     return formatted_response, address
 
 
 def get_deepest():
     """Return tokens with largest liquidities.
+
     Returns:
         str: HTML-formatted message.
     """
@@ -53,27 +56,28 @@ def get_deepest():
                   'key': POOLS_KEY
                   }
     response = api_call(url, params=api_params)
-    formatted_response = format_deepest(response['results'])
+    formatted_response = ft.format_deepest(response['results'])
     return formatted_response
 
 
 def get_aggregator_offer(order, aggregator):
     """"Return price and platform routing for exchange aggregators.
+
         Args:
             request [list]: Args specifying user's request.
             aggregator [str]: Which aggregator to use.
         Returns:
             str: HTML-formatted message.
     """
-    aggregator_fun = {"dexag": get_dexag_offer,
-                      "oneinch": get_1inch_offer,
-                      "paraswap": get_paraswap_offer,
-                      "zerox": get_0x_offer} # TODO move to config?
+    aggregator_fun = {"dexag": gt.get_dexag_offer,
+                      "oneinch": gt.get_1inch_offer,
+                      "paraswap": gt.get_paraswap_offer,
+                      "zerox": gt.get_0x_offer}  # TODO move to config
     two_way = config.AGGREGATOR_PREFERENCES[aggregator]['two_way']
     default_token = config.AGGREGATOR_PREFERENCES[aggregator]['default_token']
     params = get_formatted_input(order, two_way=two_way, default_token=default_token)
     result = aggregator_fun[aggregator](params)
-    formatted = format_offer(result)
+    formatted = ft.format_offer(result)
     return formatted
 
 
@@ -141,8 +145,7 @@ def get_formatted_input(order, two_way=False, default_token='ETH'):
     order_dict['toAmount'] = float(order_dict['toAmount']) if order_dict.get('toAmount') else None
     order_dict['fromToken'] = order_dict.get('fromToken', default_token)  # Default token is if no selling token
     # Buying and selling token can't be the same
-    if order_dict['fromToken'] == order_dict['toToken']: raise DataError('Invalid token combination')
+    if order_dict['fromToken'] == order_dict['toToken']:
+        raise DataError('Invalid token combination')
 
     return order_dict
-
-

@@ -4,11 +4,13 @@ Miha Lotric, Dec 2019
 """
 import requests
 from math import floor, log10
-from cool_defi_bot.api.custom_exceptions import *
+
+from cool_defi_bot.api.custom_exceptions import APIError
 
 
 def to_metric_prefix(num, sig=4):
     """Turn thousands in their equivalent metric(SI) prefixes and return the result.
+
     Args:
         num [float]: Number to which prefix will be added.
     Returns:
@@ -20,6 +22,7 @@ def to_metric_prefix(num, sig=4):
     if (power >= 12) or (power < 0):
         x = 'e' if power < -3 else 'f'
         return f"{round_sig(num, sig=sig):.{sig-1}{x}}"
+
     thousands = floor(power/3)
     num_front = num * 10 ** (-3 * thousands)
     prefix = prefixes[thousands]
@@ -32,6 +35,7 @@ def to_metric_prefix(num, sig=4):
 
 def to_emoji(num):
     """Return an emoji corresponding to the percentage of annualized returns
+
     Args:
         num [float]: Number for which emoji is requested.
     Return:
@@ -72,5 +76,5 @@ def api_call(url, params=None):
     try:
         return requests.get(url, params).json()
     except:
+        # Original exception is picked up with traceback module in telegram_bot.py
         raise APIError('<b>API Unavailable</b>\nPlease try again later')
-

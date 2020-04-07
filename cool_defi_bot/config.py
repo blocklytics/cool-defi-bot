@@ -28,6 +28,8 @@ URLS = {
     'deepest': 'https://api.blocklytics.org/pools/v0/exchanges',
     'analytics': 'https://www.google-analytics.com/collect',
     'slack_api': 'https://slack.com/api/chat.postMessage',
+    'pools_token_site': 'https://pools.fyi/#/returns',
+    'pools_site': 'https://pools.fyi',
     'aggregators': {
         'oneinch': {
             'offer': 'https://api.1inch.exchange/v1.1/quote',
@@ -35,7 +37,7 @@ URLS = {
             'site': 'https://1inch.exchange'
         },
         'dexag': {
-            'offer': 'https://api.dex.ag/price',  # TODO - change it to https://api-v2.dex.ag
+            'offer': 'https://api-v2.dex.ag/price',
             'site': 'https://dex.ag'
         },
         'paraswap': {

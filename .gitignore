@@ -1,16 +1,2 @@
-.vscode/
-.idea/
-
 __pycache__/
-
-env/
 .env
-
-tests/
-manual_bot_start/
-*.sh
-delete_me.py
-
-app.yaml
-app-staging.yaml
-.gitlab-ci.yml
