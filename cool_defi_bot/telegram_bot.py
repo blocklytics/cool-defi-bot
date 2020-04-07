@@ -202,9 +202,8 @@ def feedback(update, context):
               'pretty': 1}
     url = config.URLS['slack_api']
     # Send message only if it contains something
-    # if not empty:
-    #     requests.get(url, params=params)
-    print(final_msg)
+    if not empty:
+        requests.get(url, params=params)
 
 
 # todo make slack helper function
