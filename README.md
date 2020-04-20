@@ -52,3 +52,6 @@ $ python run_telegram.py
 	```bash
 	$ curl -X POST -d '' "http://127.0.0.1:8080/stop?method=Local"
 	```
+
+# Contact
+You can contact me via mail on **miha@blocklytics.org**.
