@@ -27,7 +27,7 @@ def format_annualized_returns(token_data, annualized_returns):
     header = f"<b>{platform_emoji[platform.lower()]} {base_symbol}-{token_symbol} {platform.capitalize()} Pool</b>"
     fomatted_returns = '\n'.join([f"\t• {d} days ago: <b>"
                                   f"{str(round(bydays[d], 1)) + '%' if bydays[d] is not None else 'n/a'} "
-                                  f"{to_emoji(bydays[d])}</b>"
+                                  f"{to_emoji(bydays[d]) if bydays[d] is not None else ''}</b>"
                                   for d in possible_days])
 
     volume = '$' + to_metric_prefix(token_data['usdVolume']) if token_data['usdVolume'] is not None else 'n/a'
